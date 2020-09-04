@@ -309,7 +309,10 @@ func NewACIProvider(config string, rm *manager.ResourceManager, nodeName, operat
 	p.internalIP = internalIP
 	p.daemonEndpointPort = daemonEndpointPort
 
-	if subnetName := os.Getenv("ACI_SUBNET_NAME"); p.vnetName != "" && subnetName != "" {
+	if subnetName := os.Getenv("ACI_SUBNET_NAME"); subnetName != "" {
+		if p.vnetName == "" {
+			return nil, fmt.Errorf("subnet name defined but no vnet name, vnet name is required to set a subnet name")
+		}
 		p.subnetName = subnetName
 	}
 	if networkProfileName := os.Getenv("ACI_NETWORK_PROFILE_NAME"); networkProfileName != "" {
